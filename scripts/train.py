@@ -39,6 +39,8 @@ from src.models.popularity import PopularityRecommender
 from src.models.user_cf import UserCFRecommender
 from src.models.item_cf import ItemCFRecommender
 from src.models.svd_model import SVDRecommender
+from src.models.ncf import NCFRecommender
+from src.models.two_tower import TwoTowerRecommender
 from src.evaluation.metrics import evaluate_model
 
 
@@ -47,7 +49,8 @@ def parse_args():
     parser.add_argument("--dataset", choices=["small", "25m"], default="small")
     parser.add_argument("--data-path", type=str, default=None, help="Path to already-extracted MovieLens folder (skips download)")
     parser.add_argument("--skip-eval", action="store_true", help="Skip evaluation step")
-    parser.add_argument("--models", nargs="+", default=["popularity", "user_cf", "item_cf", "svd"],
+    parser.add_argument("--models", nargs="+",
+                        default=["popularity", "user_cf", "item_cf", "svd", "ncf", "two_tower"],
                         help="Which models to train")
     return parser.parse_args()
 
@@ -90,9 +93,11 @@ def main():
     # ── 3. Build model registry ───────────────────────────────────
     model_registry = {
         "popularity": PopularityRecommender(),
-        "user_cf": UserCFRecommender(n_neighbors=CF_N_NEIGHBORS),
-        "item_cf": ItemCFRecommender(n_neighbors=CF_N_NEIGHBORS),
-        "svd": SVDRecommender(n_components=SVD_N_COMPONENTS),
+        "user_cf":    UserCFRecommender(n_neighbors=CF_N_NEIGHBORS),
+        "item_cf":    ItemCFRecommender(n_neighbors=CF_N_NEIGHBORS),
+        "svd":        SVDRecommender(n_components=SVD_N_COMPONENTS),
+        "ncf":        NCFRecommender(embed_dim=32, epochs=10),
+        "two_tower":  TwoTowerRecommender(embed_dim=64, output_dim=32, epochs=10),
     }
     selected_models = {k: v for k, v in model_registry.items() if k in args.models}
 
