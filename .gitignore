@@ -1,0 +1,26 @@
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Data files (large — download via scripts/train.py)
+data/raw/
+data/processed/
+
+# Trained models (large — regenerate via scripts/train.py)
+saved_models/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
